@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import junit.framework.Assert;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest
+@SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 public class EmployeeDataServiceTest {
