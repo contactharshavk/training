@@ -27,7 +27,7 @@ import junit.framework.Assert;
 @Transactional
 public class EmployeeDataServiceTest {
 
-	private EmployeeBean emp;
+	/*private EmployeeBean emp;
 	private List<EmployeeBean> empList;
 
 	@Autowired
@@ -102,7 +102,7 @@ public class EmployeeDataServiceTest {
 		Assert.assertNotSame(newEmployee, employee);
 		System.out.println(employee.getId() + " " + employee.getUserName() + " " + employee.getPassword() + "delete test case");
 		Assert.assertEquals(newEmployee, employee);		
-		/* commenting for git */
+		 commenting for git 
 	}
 
 	@Test
@@ -114,5 +114,5 @@ public class EmployeeDataServiceTest {
 			Assert.assertEquals("Specified Id " + employee.getId() + " Not Present", exception.getMessage());
 		}
 	}
-	
+	*/
 }
