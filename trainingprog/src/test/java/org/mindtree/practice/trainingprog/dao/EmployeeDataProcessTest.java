@@ -28,8 +28,8 @@ import junit.framework.Assert;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
+//@AutoConfigureMockMvc
+//@Transactional
 public class EmployeeDataProcessTest {
 
 	/*@Autowired
