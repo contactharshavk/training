@@ -1,0 +1,118 @@
+--------------------------------------------------
+26 July 2018
+--------------------------------------------------
+
+package org.mindtree.practice.trainingprog.dao;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+
+import org.mindtree.practice.trainingprog.Exceptions.IdAlreadyPresentException;
+import org.mindtree.practice.trainingprog.Exceptions.IdNotFoundException;
+import org.mindtree.practice.trainingprog.dto.EmployeeBean;
+import org.mindtree.practice.trainingprog.dto.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmployeeDataProcess {
+
+	private EmployeeBean emp;
+	private List<EmployeeBean> empList;
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
+
+	public EmployeeBean createEmployee(EmployeeBean emp) throws IdAlreadyPresentException {
+		int i = 0;
+		System.out.println("add emp start in EmployeeDataProcess save");
+		empList = getAllEmployee();
+		Iterator<EmployeeBean> it = empList.iterator();
+		while(it.hasNext()) {
+			System.out.println("inside while loop");
+			if(emp.getId().equals(it.next().getId())) {
+				System.out.println("inside while loop condition");
+				throw new IdAlreadyPresentException("Specified Id " + emp.getId() + " Already Present");
+			}
+		}
+		System.out.println("add emp end in EmployeeDataProcess save");
+		return employeeRepository.save(emp);
+	}
+	
+	public EmployeeBean getEmp(BigInteger id) throws IdNotFoundException {
+		/*optional = repository.findById(id);
+		emp = optional.get();*/
+		System.out.println("add emp start in EmployeeDataProcess getEmp");
+		emp = employeeRepository.findById(id).get();
+		if(emp == null) {
+			throw new IdNotFoundException("Specified Id " + id + " Not Present");
+		}
+		System.out.println("add emp end in EmployeeDataProcess getEmp");
+		return emp;
+	}	
+	
+	@SuppressWarnings("rawtypes")
+	public List<EmployeeBean> getAllEmployee() {
+		/*Iterator<EmployeeBean> it = empList.iterator();
+		it = (Iterator<EmployeeBean>) repository.findAll();*/
+		/*Iterator it = empList.iterator();
+		it = (Iterator) repository.findAll();
+		List <EmployeeBean> emp2 = new ArrayList<EmployeeBean>();
+		repository.findAll().forEach(emp2::add);*/
+		
+//		empList = new ArrayList<EmployeeBean>();
+//		Iterator it = (Iterator) employeeRepository.findAll();
+//		while(it.hasNext()) {
+//			empList.add((EmployeeBean) it.next());
+//		}
+		
+//		Iterator it = (Iterator) employeeRepository.findAll();
+//		empList = Lists.newArrayList(it);
+		System.out.println("add emp start in EmployeeDataProcess getAllEmployee");
+		empList =  (List<EmployeeBean>) employeeRepository.findAll();
+		System.out.println("add emp end in EmployeeDataProcess getAllEmployee");
+		return empList;
+	}
+	
+	public void setEmp(EmployeeBean emp) {
+		this.emp = emp;
+	}
+	
+	public EmployeeBean updateEmployee(BigInteger id, EmployeeBean newEmp) {
+		System.out.println("add emp start in EmployeeDataProcess updateEmployee");
+		/*emp = employeeRepository.findById(id).get();*/
+		System.out.println("after getting id");
+		/*if(emp == null) {
+			System.out.println("inside if condition");
+			throw new IdNotFoundException("Specified Id " + id + " Not Present");
+		}*/
+		
+		/*newEmp.setId(id);
+		employeeRepository.delete(emp);
+		System.out.println("add emp end in EmployeeDataProcess updateEmployee");*/
+		return employeeRepository.save(newEmp);
+	}
+	
+	public EmployeeBean deleteEmployee(BigInteger id) throws IdNotFoundException {
+		System.out.println("add emp start in EmployeeDataProcess deleteEmployee" + id);
+		
+		try {
+			System.out.println("after getting id");
+			emp = employeeRepository.findById(id).get();
+		}catch(NoSuchElementException | NullPointerException e){
+			System.out.println("after exception");
+//			e.printStackTrace();
+			throw new IdNotFoundException("Specified Id " + id + " Not Present");
+		}
+		System.out.println("just before delete");
+		employeeRepository.delete(emp);
+		System.out.println("add emp end in EmployeeDataProcess updateEmployee");
+		return emp;
+	}
+	
+}

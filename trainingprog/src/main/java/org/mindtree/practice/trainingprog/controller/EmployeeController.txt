@@ -1,0 +1,173 @@
+--------------------------------------------------
+26 July 2018
+--------------------------------------------------
+
+package org.mindtree.practice.trainingprog.controller;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.mindtree.practice.trainingprog.Exceptions.IdAlreadyPresentException;
+import org.mindtree.practice.trainingprog.Exceptions.IdNotFoundException;
+import org.mindtree.practice.trainingprog.dao.EmployeeDataProcess;
+import org.mindtree.practice.trainingprog.dto.EmployeeBean;
+import org.mindtree.practice.trainingprog.dto.EmployeeStatusMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class EmployeeController {
+	
+	private EmployeeBean emp;
+	
+	private List<EmployeeBean> empList;
+//	@Autowired
+//	private EmployeeBean emp = new EmployeeBean();
+	
+	private EmployeeStatusMessage employeeStatusMessage;
+	
+	@Autowired
+	private EmployeeDataProcess employeeDataProcess; 
+
+	@RequestMapping(value="/EmpMgt/addEmp", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<EmployeeStatusMessage> createEmployee(@RequestBody EmployeeBean emp) throws IdAlreadyPresentException {
+		/*System.out.println("add emp start in controller");
+		this.emp=emp;
+		try {
+			emp = employeeDataProcess.save(emp);
+		} catch (IdAlreadyPresentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			emp.setStatus(e.getMessage());
+			return new ResponseEntity<EmployeeBean>(emp, HttpStatus.BAD_REQUEST);
+		}
+		emp.setStatus("Id Created Successfully");
+		System.out.println("add emp done");
+		return new ResponseEntity<EmployeeBean>(emp, HttpStatus.OK);*/
+		emp = employeeDataProcess.createEmployee(emp);
+//		employeeStatusMessage.setEmployeeBean(emp);
+		employeeStatusMessage = new EmployeeStatusMessage("Specified Id created successfully");
+		empList = new ArrayList<EmployeeBean>();
+		empList.add(emp);
+		employeeStatusMessage.setEmployeeBeanList(empList);
+		return new ResponseEntity<EmployeeStatusMessage>(employeeStatusMessage, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/EmpMgt/getEmp/{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EmployeeStatusMessage> getEmployee(@PathVariable ("id") String id) throws NumberFormatException, IdNotFoundException {
+		/*empList = new ArrayList<EmployeeBean>();
+		empList.add(new EmployeeBean(BigInteger.valueOf(Long.parseLong("1")), "ranga1", "password1", "fullName1", "eMailId1", "dob1", "gender1", "securityQusetion1", "securityAnswer1"));
+		empList.add(new EmployeeBean(BigInteger.valueOf(Long.parseLong("2")), "ranga2", "password2", "fullName2", "eMailId2", "dob2", "gender2", "securityQusetion2", "securityAnswer2"));
+		empList.add(new EmployeeBean(BigInteger.valueOf(Long.parseLong("3")), "ranga3", "password3", "fullName3", "eMailId3", "dob3", "gender3", "securityQusetion3", "securityAnswer3"));
+		
+		Iterator<EmployeeBean> it = empList.iterator();
+		
+		while(it.hasNext()) {
+			if(it.next().getId().equals(id)) {
+				return null;
+			}
+		}*/
+		
+		/*try {
+			emp = employeeDataProcess.getEmp(BigInteger.valueOf(Long.parseLong(id)));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			emp.setStatus("Internal Server Error");
+			return new ResponseEntity<EmployeeBean>(emp, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (IdNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			emp.setStatus(e.getMessage());
+//			return new ResponseEntity<EmployeeBean>(emp, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<EmployeeBean>(emp, HttpStatus.BAD_REQUEST);
+		}
+		emp.setStatus("Retrieved info successfully");
+		return new ResponseEntity<EmployeeBean>(emp, HttpStatus.OK);*/
+		
+		emp = employeeDataProcess.getEmp(BigInteger.valueOf(Long.parseLong(id)));;
+		employeeStatusMessage = new EmployeeStatusMessage("Specified Employee Retrieved successfully");
+		empList = new ArrayList<EmployeeBean>();
+		empList.add(emp);
+		employeeStatusMessage.setEmployeeBeanList(empList);
+		return new ResponseEntity<EmployeeStatusMessage>(employeeStatusMessage, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/EmpMgt/getEmp/getAllEmpDetails", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EmployeeStatusMessage> getAllEmployees() {
+		empList = employeeDataProcess.getAllEmployee();
+		employeeStatusMessage = new EmployeeStatusMessage("Specified Employees Retrieved successfully");
+		employeeStatusMessage.setEmployeeBeanList(empList);
+		return new ResponseEntity<EmployeeStatusMessage>(employeeStatusMessage, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/EmpMgt/updateEmp/{id}", method=RequestMethod.PUT, consumes= MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EmployeeStatusMessage> updateEmployee(@PathVariable ("id") String id, @RequestBody EmployeeBean newEmp) throws NumberFormatException, IdNotFoundException {
+		/*try {
+			emp = employeeDataProcess.updateEmployee(BigInteger.valueOf(Long.parseLong(id)), newEmp);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			newEmp.setStatus("Internal Server Error");
+			return new ResponseEntity<EmployeeBean>(newEmp, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NoSuchElementException e) {
+			// TODO Auto-generated catch block
+			throw new IdNotFoundException("give Id not found");
+		}*/
+		
+		emp = employeeDataProcess.updateEmployee(BigInteger.valueOf(Long.parseLong(id)), newEmp);
+		employeeStatusMessage = new EmployeeStatusMessage("Specified Employees Updated successfully");
+		empList = new ArrayList<EmployeeBean>();
+		empList.add(emp);
+		employeeStatusMessage.setEmployeeBeanList(empList);
+		return new ResponseEntity<EmployeeStatusMessage>(employeeStatusMessage, HttpStatus.OK);
+		
+//		emp = employeeDataProcess.updateEmployee(BigInteger.valueOf(Long.parseLong(id)), newEmp);
+//		return new ResponseEntity<EmployeeBean>(emp, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/EmpMgt/deleteEmp/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EmployeeStatusMessage> deleteEmployee(@PathVariable ("id") String id) throws NumberFormatException, IdNotFoundException {
+		/*try {
+			emp = employeeDataProcess.deleteEmployee(BigInteger.valueOf(Long.parseLong(id)));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			emp.setStatus("Internal Server Error");
+			return new ResponseEntity<EmployeeBean>(emp, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (IdNotFoundException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+			emp.setStatus(e.getMessage());
+			return new ResponseEntity<EmployeeBean>(emp, HttpStatus.BAD_REQUEST);
+		}
+		emp.setStatus("Deleted info successfully");
+		return new ResponseEntity<EmployeeBean>(emp, HttpStatus.OK);*/
+		
+		try {
+			emp = employeeDataProcess.deleteEmployee(BigInteger.valueOf(Long.parseLong(id)));
+		}catch(NoSuchElementException e) {
+			// TODO Auto-generated catch block
+			throw new IdNotFoundException("give Id " + BigInteger.valueOf(Long.parseLong(id)) + " not found");
+		}
+		
+//		emp = employeeDataProcess.deleteEmployee(BigInteger.valueOf(Long.parseLong(id)));
+		
+		employeeStatusMessage = new EmployeeStatusMessage("Specified Employees Deleted successfully");
+		empList = new ArrayList<EmployeeBean>();
+		empList.add(emp);
+		employeeStatusMessage.setEmployeeBeanList(empList);
+		return new ResponseEntity<EmployeeStatusMessage>(employeeStatusMessage, HttpStatus.OK);
+	}
+	
+	
+}

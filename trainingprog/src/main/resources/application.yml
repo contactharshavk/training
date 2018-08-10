@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: trainingprog
+
+server:
+  port: 8080
+
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka/
+  instance:
+    hostname: localhost
